@@ -34,9 +34,9 @@ Feature: Toll Calculation Edge Cases and Validation
     When the user calculates toll for 1000 miles during normal times
     Then the total charge should be $1020.00
     And the charge breakdown should show:
-      | Distance        | Rate       | Amount   |
-      | First 20 miles  | $2.00/mile | $40.00   |
-      | Next 980 miles  | $1.00/mile | $980.00  |
+      | Description         | Calculation        | Amount   |
+      | First 20 miles (base) | 20 miles × $2.00   | $40.00   |
+      | Next 980 miles (base) | 980 miles × $1.00  | $980.00  |
 
   @edge_cases @precision
   Scenario: Fractional distance calculation
@@ -44,8 +44,8 @@ Feature: Toll Calculation Edge Cases and Validation
     When the user calculates toll for 10.5 miles during normal times
     Then the total charge should be $10.50
     And the charge breakdown should show:
-      | Distance   | Rate       | Amount |
-      | 10.5 miles | $1.00/mile | $10.50 |
+      | Description | Calculation       | Amount |
+      | Base charge | 10.5 miles × $1.00 | $10.50 |
 
   @edge_cases @boundary_testing
   Scenario Outline: Boundary testing for 20-mile threshold
@@ -110,5 +110,5 @@ Feature: Toll Calculation Edge Cases and Validation
     Given the user is a non-member
     When the user calculates toll for 9999 miles during peak times
     Then the system should handle the calculation successfully
-    And the total charge should be $59994.00
+    And the total charge should be $30057.00
     And the response time should be less than 2 seconds

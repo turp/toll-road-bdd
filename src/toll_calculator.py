@@ -147,9 +147,15 @@ class TollCalculator:
             rate = self.BASE_RATES_FIRST_20[membership]
             charge = distance * rate
             
+            # Format distance to remove unnecessary decimal places
+            if distance == int(distance):
+                distance_str = str(int(distance))
+            else:
+                distance_str = str(distance)
+            
             self.last_calculation_breakdown.append({
-                "Distance": f"{distance} miles",
-                "Rate": f"${rate}/mile",
+                "Description": f"Base charge",
+                "Calculation": f"{distance_str} miles × ${rate}",
                 "Amount": f"${charge:.2f}"
             })
             
@@ -163,15 +169,21 @@ class TollCalculator:
             remaining_miles = distance - Decimal("20")
             remaining_charge = remaining_miles * beyond_20_rate
             
+            # Format remaining miles to remove unnecessary decimal places
+            if remaining_miles == int(remaining_miles):
+                remaining_str = str(int(remaining_miles))
+            else:
+                remaining_str = str(remaining_miles)
+            
             self.last_calculation_breakdown.extend([
                 {
-                    "Distance": "First 20 miles",
-                    "Rate": f"${first_20_rate}/mile",
+                    "Description": "First 20 miles (base)",
+                    "Calculation": f"20 miles × ${first_20_rate}",
                     "Amount": f"${first_20_charge:.2f}"
                 },
                 {
-                    "Distance": f"Next {remaining_miles} miles",
-                    "Rate": f"${beyond_20_rate}/mile",
+                    "Description": f"Next {remaining_str} miles (base)",
+                    "Calculation": f"{remaining_str} miles × ${beyond_20_rate}",
                     "Amount": f"${remaining_charge:.2f}"
                 }
             ])
@@ -186,14 +198,28 @@ class TollCalculator:
         # Special logic for Gold members during busy/peak times
         if membership == MembershipLevel.GOLD and time_period != TimePeriod.NORMAL:
             if distance <= 20:
-                # Gold members are free for first 20 miles regardless of time
-                return Decimal("0.00")
+                # Gold members are free for first 20 miles but we still show the calculation
+                final_charge = Decimal("0.00")
+                
+                # Update breakdown to show time multiplier calculation
+                multiplier_str = str(int(multiplier)) if multiplier == int(multiplier) else str(multiplier)
+                self.last_calculation_breakdown.append({
+                    "Description": f"{time_period.value.title()} time multiplier",
+                    "Calculation": f"${base_charge:.2f} × {multiplier_str}",
+                    "Amount": f"${final_charge:.2f}"
+                })
+                
+                return final_charge
             else:
                 # Gold members pay 25% of the normal rate for miles beyond 20
                 # during busy/peak times
                 remaining_miles = distance - Decimal("20")
                 beyond_20_rate = Decimal("0.25")  # 25% of $1.00 base rate
                 charge = remaining_miles * beyond_20_rate * multiplier
+                
+                # Format remaining miles and multiplier for display
+                remaining_str = str(int(remaining_miles)) if remaining_miles == int(remaining_miles) else str(remaining_miles)
+                multiplier_str = str(int(multiplier)) if multiplier == int(multiplier) else str(multiplier)
                 
                 # Update breakdown for Gold member special case
                 self.last_calculation_breakdown = [
@@ -203,13 +229,13 @@ class TollCalculator:
                         "Amount": "$0.00"
                     },
                     {
-                        "Description": f"Next {remaining_miles} miles (base)",
-                        "Calculation": f"{remaining_miles} miles × $0.25",
+                        "Description": f"Next {remaining_str} miles (base)",
+                        "Calculation": f"{remaining_str} miles × $0.25",
                         "Amount": f"${remaining_miles * beyond_20_rate:.2f}"
                     },
                     {
                         "Description": f"{time_period.value.title()} time multiplier",
-                        "Calculation": f"${remaining_miles * beyond_20_rate:.2f} × {multiplier}",
+                        "Calculation": f"${remaining_miles * beyond_20_rate:.2f} × {multiplier_str}",
                         "Amount": f"${charge:.2f}"
                     }
                 ]
@@ -222,11 +248,26 @@ class TollCalculator:
         
         final_charge = base_charge * multiplier
         
+        # For long distance scenarios (beyond 20 miles), add total base charge breakdown item
+        if len(self.last_calculation_breakdown) > 1:
+            total_base = sum(Decimal(item["Amount"].replace("$", "")) for item in self.last_calculation_breakdown)
+            self.last_calculation_breakdown.append({
+                "Description": "Total base charge",
+                "Calculation": " + ".join([item["Amount"] for item in self.last_calculation_breakdown]),
+                "Amount": f"${total_base:.2f}"
+            })
+        
         # Update breakdown to show time multiplier
         if base_charge > 0:
+            # Format multiplier to remove unnecessary decimal places
+            if multiplier == int(multiplier):
+                multiplier_str = str(int(multiplier))
+            else:
+                multiplier_str = str(multiplier)
+            
             self.last_calculation_breakdown.append({
                 "Description": f"{time_period.value.title()} time multiplier",
-                "Calculation": f"${base_charge:.2f} × {multiplier}",
+                "Calculation": f"${base_charge:.2f} × {multiplier_str}",
                 "Amount": f"${final_charge:.2f}"
             })
         

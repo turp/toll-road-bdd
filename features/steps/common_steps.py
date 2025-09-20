@@ -18,6 +18,22 @@ def step_calculator_available(context):
     assert hasattr(context.calculator, 'calculate_toll')
 
 
+@given('the standard rates are configured as follows:')
+def step_standard_rates_configured_with_colon(context):
+    """Verify standard rates are configured (table validation with colon)"""
+    # This step validates that our rate table in the feature matches
+    # what's implemented in the calculator
+    expected_rates = {}
+    for row in context.table:
+        rate_type = row['Rate Type']
+        first_20 = row['First 20 Miles']
+        beyond_20 = row['Beyond 20 Miles']
+        expected_rates[rate_type] = {'first_20': first_20, 'beyond_20': beyond_20}
+    
+    # Store for potential validation
+    context.expected_rates = expected_rates
+
+
 @given('the standard rates are configured as follows')
 def step_standard_rates_configured(context):
     """Verify standard rates are configured (table validation)"""
@@ -32,6 +48,19 @@ def step_standard_rates_configured(context):
     
     # Store for potential validation
     context.expected_rates = expected_rates
+
+
+@given('the time-based multipliers are configured as follows:')
+def step_time_multipliers_configured_with_colon(context):
+    """Verify time-based multipliers are configured (table validation with colon)"""
+    expected_multipliers = {}
+    for row in context.table:
+        time_period = row['Time Period']
+        multiplier = row['Multiplier']
+        expected_multipliers[time_period] = multiplier
+    
+    # Store for potential validation
+    context.expected_multipliers = expected_multipliers
 
 
 @given('the time-based multipliers are configured as follows')
@@ -162,6 +191,26 @@ def step_verify_no_charge(context):
     assert context.last_charge is None, f"Expected no charge but got ${context.last_charge}"
 
 
+@then('the charge breakdown should show:')
+def step_verify_charge_breakdown_with_colon(context):
+    """Verify the detailed charge breakdown (with colon)"""
+    expected_breakdown = []
+    for row in context.table:
+        expected_breakdown.append(dict(row.as_dict()))
+    
+    actual_breakdown = context.calculation_breakdown
+    
+    assert len(actual_breakdown) == len(expected_breakdown), \
+        f"Expected {len(expected_breakdown)} breakdown items, got {len(actual_breakdown)}"
+    
+    for i, (expected, actual) in enumerate(zip(expected_breakdown, actual_breakdown)):
+        for key, expected_value in expected.items():
+            assert key in actual, f"Missing key '{key}' in breakdown item {i}"
+            actual_value = actual[key]
+            assert actual_value == expected_value, \
+                f"Breakdown item {i}, key '{key}': expected '{expected_value}', got '{actual_value}'"
+
+
 @then('the charge breakdown should show')
 def step_verify_charge_breakdown(context):
     """Verify the detailed charge breakdown"""
@@ -198,13 +247,6 @@ def step_verify_execution_time(context, max_seconds):
     assert hasattr(context, 'execution_time'), "No execution time recorded"
     assert context.execution_time <= max_seconds, \
         f"Calculations took {context.execution_time:.2f}s, expected <= {max_seconds}s"
-
-
-@then('the system should handle the calculation successfully')
-def step_verify_calculation_success(context):
-    """Verify that the calculation was successful (no errors)"""
-    assert context.last_error is None, f"Expected successful calculation but got error: {context.last_error}"
-    assert context.last_charge is not None, "Expected a charge but got None"
 
 
 @then('the response time should be less than {max_seconds:f} seconds')
