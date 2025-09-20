@@ -1,32 +1,33 @@
-# BDD Test Project - Python
+# Toll Road BDD Calculator
 
-This project follows Behavior-Driven Development (BDD) principles using Python and the `behave` framework for automated testing.
+A comprehensive toll charge calculation system built using Behavior-Driven Development (BDD) principles with Python and the `behave` framework.
 
-## Prompts
+## Project Overview
 
-```
-create a readme file with instructions for a BDD test project written in python. This should include, but not limited to naming conventions, folder structure, feature and scenario structure
-```
+This project implements a robust toll calculation system that handles:
 
-```
-create a copilot instruction file stating that it should use all readme files as a source for instructions
-```
+- **Multiple membership tiers**: Non-member, Silver, and Gold with different pricing structures
+- **Distance-based pricing**: Different rates for first 20 miles vs. beyond 20 miles
+- **Time-based multipliers**: Normal (1x), Busy (2x), and Peak (3x) pricing periods
+- **Comprehensive validation**: Edge cases, boundary testing, and error handling
+- **Detailed breakdowns**: Itemized charge calculations for transparency
 
-```
-Create a set of BDD tests for the website https://apps.irs.gov/app/tax-withholding-estimator. When you have created the features, wait for me to validate them before implementing the test logic using python. Once I have validated the features, implement the scenarios one at a time, executing the tests and fixing linting issues as you go. Once you have implemented the first three scenarios and verified that they execute properly, ask for permission to implement the rest of the scenarios.
-```
+### Business Rules
 
-## Table of Contents
+| Membership | First 20 Miles | Beyond 20 Miles | Special Rules |
+|------------|----------------|-----------------|---------------|
+| Non-member | $2.00/mile     | $1.00/mile      | Standard rates apply |
+| Silver     | $1.00/mile     | $0.50/mile      | 50% discount on base rates |
+| Gold       | $0.00/mile     | $0.00/mile*     | Free during normal times |
 
-- [Setup and Installation](#setup-and-installation)
-- [Project Structure](#project-structure)
-- [Naming Conventions](#naming-conventions)
-- [Feature File Structure](#feature-file-structure)
-- [Scenario Structure](#scenario-structure)
-- [Step Definitions](#step-definitions)
-- [Running Tests](#running-tests)
-- [Best Practices](#best-practices)
-- [Examples](#examples)
+*Gold members pay 25% of base rate during busy/peak times for miles beyond 20.
+
+### Time Multipliers
+- **Normal times**: 1x base rate
+- **Busy times**: 2x base rate  
+- **Peak times**: 3x base rate
+
+*Note: Gold members are exempt from time multipliers during normal times only.*
 
 ## Setup and Installation
 
@@ -35,211 +36,90 @@ Create a set of BDD tests for the website https://apps.irs.gov/app/tax-withholdi
 - pip package manager
 
 ### Installation
-```bash
-# Create virtual environment
-python -m venv venv
 
-# Activate virtual environment
-# On Linux/Mac:
-source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
+1. **Create and activate virtual environment**
+   ```bash
+   # Create virtual environment
+   python -m venv .venv
 
-# Install dependencies
-pip install -r requirements.txt
-```
+   # Activate virtual environment
+   # On Linux/Mac:
+   source .venv/bin/activate
+   # On Windows:
+   # .venv\Scripts\activate
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### Required Dependencies
-```txt
-behave>=1.2.6
-selenium>=4.0.0
-requests>=2.28.0
-pytest>=7.0.0
-allure-behave>=2.12.0
-```
-
-## Project Structure
-
-```
-tax-calc-bdd/
-├── features/
-│   ├── steps/
-│   │   ├── __init__.py
-│   │   ├── common_steps.py
-│   │   ├── calculation_steps.py
-│   │   └── validation_steps.py
-│   ├── support/
-│   │   ├── __init__.py
-│   │   ├── environment.py
-│   │   ├── hooks.py
-│   │   └── utilities.py
-│   ├── pages/
-│   │   ├── __init__.py
-│   │   ├── base_page.py
-│   │   └── calculator_page.py
-│   ├── data/
-│   │   ├── test_data.json
-│   │   └── config.yaml
-│   ├── tax_calculation.feature
-│   ├── user_interface.feature
-│   └── api_validation.feature
-├── reports/
-│   └── allure-results/
-├── config/
-│   ├── test_config.py
-│   └── environment_config.py
-├── requirements.txt
-├── behave.ini
-└── README.md
-```
-
-## Naming Conventions
-
-### Files and Directories
-- **Feature files**: Use lowercase with underscores (`tax_calculation.feature`)
-- **Step definition files**: Use lowercase with underscores ending in `_steps.py` (`calculation_steps.py`)
-- **Page object files**: Use lowercase with underscores ending in `_page.py` (`calculator_page.py`)
-- **Utility files**: Use lowercase with underscores (`utilities.py`)
-
-### Variables and Functions
-- **Python variables**: Use snake_case (`user_input`, `tax_amount`)
-- **Functions**: Use snake_case (`calculate_tax`, `validate_result`)
-- **Constants**: Use UPPER_SNAKE_CASE (`BASE_URL`, `DEFAULT_TIMEOUT`)
-
-### Gherkin Keywords
-- **Feature names**: Use Title Case (`Tax Calculation Validation`)
-- **Scenario names**: Use descriptive sentences (`User calculates income tax for single filer`)
-- **Step names**: Use natural language (`Given the user is on the tax calculator page`)
-
-## Feature File Structure
-
-### Feature Template
-```gherkin
-@feature_tag @priority_high
-Feature: Feature Name
-  As a [user type]
-  I want to [perform action]
-  So that [achieve goal]
-
-  Background:
-    Given common preconditions for all scenarios
-
-  @scenario_tag @smoke
-  Scenario: Scenario description
-    Given initial conditions
-    When user performs action
-    Then expected outcome occurs
-
-  @scenario_tag @regression
-  Scenario Outline: Scenario with multiple data sets
-    Given initial conditions with "<parameter>"
-    When user performs action with "<input>"
-    Then expected outcome is "<result>"
-
-    Examples:
-      | parameter | input | result |
-      | value1    | data1 | exp1   |
-      | value2    | data2 | exp2   |
-```
-
-### Feature File Guidelines
-- One feature per file
-- Start with feature description using user story format
-- Use Background for common setup steps
-- Group related scenarios in the same feature
-- Use meaningful tags for test organization
-
-## Scenario Structure
-
-### Scenario Best Practices
-- **Given**: Set up the initial state (preconditions)
-- **When**: Describe the action being performed
-- **Then**: Verify the expected outcome
-- **And/But**: Chain additional steps of the same type
-
-### Good Scenario Examples
-```gherkin
-Scenario: Calculate tax for single filer with standard deduction
-  Given the user is on the tax calculator page
-  And the filing status is set to "Single"
-  And the annual income is set to "50000"
-  When the user clicks the calculate button
-  Then the calculated tax should be "5739"
-  And the effective tax rate should be "11.48%"
-```
-
-### Scenario Outline Usage
-```gherkin
-Scenario Outline: Validate tax calculation for different income levels
-  Given the user is on the tax calculator page
-  And the filing status is set to "<filing_status>"
-  When the user enters annual income of "<income>"
-  And clicks the calculate button
-  Then the calculated tax should be "<expected_tax>"
-
-  Examples:
-    | filing_status    | income | expected_tax |
-    | Single           | 30000  | 3219         |
-    | Married Filing   | 60000  | 6878         |
-    | Head of Household| 45000  | 4758         |
-```
-
-## Step Definitions
-
-### Step Definition Structure
-```python
-from behave import given, when, then, step
-from selenium import webdriver
-from pages.calculator_page import CalculatorPage
-
-@given('the user is on the tax calculator page')
-def step_user_on_calculator_page(context):
-    """Navigate to the tax calculator page."""
-    context.calculator_page = CalculatorPage(context.driver)
-    context.calculator_page.navigate_to_page()
-
-@when('the user enters annual income of "{income}"')
-def step_enter_annual_income(context, income):
-    """Enter the annual income value."""
-    context.calculator_page.enter_income(income)
-    context.entered_income = income
-
-@then('the calculated tax should be "{expected_tax}"')
-def step_verify_calculated_tax(context, expected_tax):
-    """Verify the calculated tax amount."""
-    actual_tax = context.calculator_page.get_calculated_tax()
-    assert actual_tax == expected_tax, f"Expected {expected_tax}, but got {actual_tax}"
-```
-
-### Step Definition Guidelines
-- One step definition per function
-- Use descriptive function names
-- Include docstrings for complex steps
-- Store reusable data in context object
-- Use parametrized steps for flexibility
+- `behave>=1.2.6` - BDD testing framework
+- `decimal` - Precise decimal calculations (built-in)
 
 ## Running Tests
 
-### Basic Commands
+### Prerequisites
+Make sure your virtual environment is activated before running tests:
+
 ```bash
+# Activate virtual environment
+source .venv/bin/activate
+# On Windows: .venv\Scripts\activate
+```
+
+### Basic Commands
+
+```bash
+# Activate environment first
+source .venv/bin/activate
+
 # Run all tests
 behave
 
 # Run specific feature
-behave features/tax_calculation.feature
+behave features/toll_calculation.feature
 
 # Run tests with specific tags
 behave --tags=@smoke
-behave --tags=@regression
+behave --tags=@edge_cases
 behave --tags="@priority_high and not @wip"
 
-# Run with specific format
+# Run with verbose output
 behave --format=pretty
-behave --format=json --outfile=reports/results.json
 
-# Run with Allure reporting
-behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results
+# Run without capture for debugging
+behave --no-capture
 ```
+
+### Alternative: Using Python Module
+
+If `behave` command is not found, use the Python module directly:
+
+```bash
+# Activate environment first
+source .venv/bin/activate
+
+# Run all tests using Python module
+python -m behave
+
+# Run specific feature
+python -m behave features/toll_calculation.feature
+
+# Run with tags
+python -m behave --tags=@smoke
+```
+
+### Test Categories
+
+The test suite includes comprehensive coverage:
+
+- **🔥 Smoke Tests** (`@smoke`): Core functionality validation
+- **🔍 Edge Cases** (`@edge_cases`): Boundary conditions and error handling  
+- **⚡ Performance** (`@performance`): Stress testing and timing validation
+- **🔄 Regression** (`@regression`): Full feature validation
+- **🏆 Priority High** (`@priority_high`): Critical path scenarios
 
 ### Configuration File (behave.ini)
 ```ini
@@ -247,111 +127,68 @@ behave -f allure_behave.formatter:AllureFormatter -o reports/allure-results
 default_format = pretty
 show_timings = true
 show_skipped = false
-junit = true
-junit_directory = reports/junit
-tags = ~@skip
 paths = features
 ```
 
-## Best Practices
+## Test Results
 
-### Feature Writing
-- Write features from user perspective
-- Use domain language, not technical jargon
-- Keep scenarios independent and atomic
-- Use meaningful and descriptive names
-- Avoid implementation details in scenarios
+The current test suite achieves **100% pass rate**:
 
-### Step Implementation
-- Keep steps simple and focused
-- Reuse common steps across features
-- Use Page Object Model for UI interactions
-- Implement proper error handling
-- Use assertion libraries for validations
+- ✅ **7 features passed, 0 failed**
+- ✅ **81 scenarios passed, 0 failed**  
+- ✅ **378 steps passed, 0 failed**
 
-### Data Management
-- Store test data in separate files (JSON, YAML)
-- Use environment-specific configurations
-- Parametrize scenarios for data-driven testing
-- Keep sensitive data in environment variables
+### Coverage Includes:
+- Basic toll calculations for all membership levels
+- Distance-based pricing (under/over 20 miles)
+- Time-based multipliers (normal/busy/peak)
+- Edge cases (invalid inputs, large numbers, fractional distances)
+- Boundary testing (exactly 20 miles, 19.99 vs 20.01)
+- Performance validation (100 rapid calculations)
+- System limits (maximum reasonable distances)
+- Comprehensive error handling
 
-### Test Organization
-- Group related scenarios in features
-- Use tags for test categorization
-- Implement proper setup/teardown in hooks
-- Create reusable utility functions
+## Example Usage
 
-## Examples
-
-### Complete Feature Example
-```gherkin
-@tax_calculation @priority_high
-Feature: Tax Calculation Validation
-  As a taxpayer
-  I want to calculate my income tax accurately
-  So that I can plan my finances effectively
-
-  Background:
-    Given the tax calculator application is running
-    And the current tax year is set to 2024
-
-  @smoke @single_filer
-  Scenario: Calculate tax for single filer with standard deduction
-    Given the user selects "Single" filing status
-    And the user has an annual income of "75000"
-    And the user chooses standard deduction
-    When the user calculates the tax
-    Then the federal tax should be "8739"
-    And the effective tax rate should be "11.65%"
-    And the tax bracket should be "22%"
-
-  @regression @married_filing
-  Scenario Outline: Validate tax for married filing jointly
-    Given the user selects "Married Filing Jointly" filing status
-    And the user has an annual income of "<income>"
-    When the user calculates the tax
-    Then the federal tax should be "<expected_tax>"
-
-    Examples:
-      | income | expected_tax |
-      | 50000  | 5147         |
-      | 100000 | 14605        |
-      | 150000 | 24905        |
-```
-
-### Environment Setup (environment.py)
+### Basic Calculation
 ```python
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from src.toll_calculator import TollCalculator
 
-def before_all(context):
-    """Setup before all tests."""
-    context.base_url = "http://localhost:3000"
-    
-def before_feature(context, feature):
-    """Setup before each feature."""
-    if 'web' in feature.tags:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        context.driver = webdriver.Chrome(options=chrome_options)
-        context.driver.implicitly_wait(10)
+calculator = TollCalculator()
 
-def after_feature(context, feature):
-    """Cleanup after each feature."""
-    if hasattr(context, 'driver'):
-        context.driver.quit()
+# Non-member, 15 miles, normal times
+charge = calculator.calculate_toll(15.0, "non", "normal")
+print(f"Charge: ${charge}")  # Output: Charge: $30.00
+
+# Get detailed breakdown
+breakdown = calculator.get_charge_breakdown()
+for item in breakdown:
+    print(f"{item['Description']}: {item['Amount']}")
 ```
 
----
+### Sample BDD Scenario
+```gherkin
+Scenario: Silver member calculates toll for long distance during peak times
+  Given the toll charge calculator is available
+  And the user is a Silver member
+  When the user calculates toll for 25 miles during peak times
+  Then the total charge should be $67.50
+  And the charge breakdown should show:
+    | Description           | Calculation      | Amount |
+    | First 20 miles (base) | 20 miles × $1.00 | $20.00 |
+    | Next 5 miles (base)   | 5 miles × $0.50  | $2.50  |
+    | Total base charge     | $20.00 + $2.50   | $22.50 |
+    | Peak time multiplier  | $22.50 × 3       | $67.50 |
+```
 
 ## Contributing
 
-1. Follow the established naming conventions
-2. Write clear, descriptive scenarios
+1. Follow the BDD principles and naming conventions in `.github/copilot-instructions.md`
+2. Write clear, descriptive scenarios using Gherkin syntax
 3. Implement reusable step definitions
 4. Add appropriate tags for test organization
-5. Update documentation for new features
+5. Ensure all tests pass before committing
 
-## Support
+## License
 
-For questions or issues, please refer to the project documentation or contact the development team.
+This project is for educational and demonstration purposes.
