@@ -5,8 +5,7 @@ Feature: Time-Based Toll Pricing
   So that pricing reflects demand and encourages off-peak travel
 
   Background:
-    Given the toll charge calculator is available
-    And the time-based multipliers are configured as follows:
+    Given the time-based multipliers are configured as follows:
       | Time Period | Multiplier |
       | Normal      | 1x         |
       | Busy        | 2x         |

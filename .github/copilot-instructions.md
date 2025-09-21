@@ -111,10 +111,10 @@ from behave import given, when, then, step
 from decimal import Decimal
 from src.toll_calculator import TollCalculator
 
-@given('the toll charge calculator is available')
-def step_calculator_available(context):
-    """Initialize the toll calculator."""
-    context.calculator = TollCalculator()
+@given('the user is a {membership_level} member')
+def step_user_membership(context, membership_level):
+    """Set the user's membership level."""
+    context.membership = membership_level
 
 @when('the user calculates toll for {distance:f} miles during {time_period} times')
 def step_calculate_toll(context, distance, time_period):
@@ -139,6 +139,32 @@ def step_verify_total_charge(context, expected_amount):
 - Use parametrized steps for flexibility
 
 ### Test Organization
+
+#### Environment Hooks and Setup
+- **Use hooks for technical setup**: Implement `before_scenario` hooks in `environment.py` for technical initialization
+- **Avoid redundant setup steps**: Do not include technical setup steps like "Given the toll charge calculator is available" in scenarios when they're handled by hooks
+- **Keep scenarios business-focused**: Scenarios should focus on business behavior, not technical infrastructure
+- **Use Background sparingly**: Only use Background for business domain setup that's relevant to all scenarios in a feature
+
+#### Example: Proper Hook Usage
+```python
+# In environment.py
+def before_scenario(context, scenario):
+    """Setup performed before each scenario"""
+    context.calculator = TollCalculator()  # Technical setup
+    context.last_charge = None
+    context.last_error = None
+```
+
+```gherkin
+# In feature files - AVOID this redundant step
+# Given the toll charge calculator is available  # ❌ Technical, handled by hook
+
+# Instead focus on business context
+Given the user is a non-member  # ✅ Business-focused
+When the user calculates toll for 10 miles during normal times
+Then the total charge should be $20.00
+```
 
 #### Best Practices
 - Write features from user perspective

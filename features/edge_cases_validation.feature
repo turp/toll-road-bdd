@@ -5,7 +5,7 @@ Feature: Toll Calculation Edge Cases and Validation
   So that the system is robust and reliable
 
   Background:
-    Given the toll charge calculator is available
+    # Calculator is automatically initialized in before_scenario hook
 
   @validation @negative_testing
   Scenario: Invalid distance input

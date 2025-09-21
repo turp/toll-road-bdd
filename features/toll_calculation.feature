@@ -5,8 +5,7 @@ Feature: Toll Charge Calculation
   So that I can understand the cost of my trip
 
   Background:
-    Given the toll charge calculator is available
-    And the standard rates are configured as follows:
+    Given the standard rates are configured as follows:
       | Rate Type  | First 20 Miles | Beyond 20 Miles |
       | Non-member | $2.00/mile     | $1.00/mile      |
       | Silver     | $1.00/mile     | $0.50/mile      |
