@@ -11,6 +11,26 @@ Feature: Time-Based Toll Pricing
       | Busy        | 2x         |
       | Peak        | 3x         |
 
+  @regression @data_driven
+  Scenario Outline: Calculate toll for different time periods and membership levels
+    Given the user is a "<membership_level>" member
+    When the user calculates toll for <distance> miles during <time_period> times
+    Then the total charge should be $<expected_total>
+
+    Examples:
+      | membership_level | distance | time_period | expected_total |
+      | non             | 10       | normal      | 20.00          |
+      | non             | 10       | busy        | 40.00          |
+      | non             | 10       | peak        | 60.00          |
+      | Silver          | 10       | normal      | 10.00          |
+      | Silver          | 10       | busy        | 20.00          |
+      | Silver          | 10       | peak        | 30.00          |
+      | Gold            | 10       | normal      | 0.00           |
+      | Gold            | 10       | busy        | 0.00           |
+      | Gold            | 10       | peak        | 0.00           |
+      | Gold            | 25       | busy        | 2.50           |
+      | Gold            | 25       | peak        | 3.75           |
+
   @smoke @time_multiplier
   Scenario: Non-member calculates toll during busy times
     Given the user is a non-member
@@ -73,23 +93,3 @@ Feature: Time-Based Toll Pricing
       | Next 5 miles (base)      | 5 miles × $1.00     | $5.00  |
       | Total base charge        | $40.00 + $5.00      | $45.00 |
       | Peak time multiplier     | $45.00 × 3          | $135.00|
-
-  @regression @data_driven
-  Scenario Outline: Calculate toll for different time periods and membership levels
-    Given the user is a "<membership_level>" member
-    When the user calculates toll for <distance> miles during <time_period> times
-    Then the total charge should be $<expected_total>
-
-    Examples:
-      | membership_level | distance | time_period | expected_total |
-      | non             | 10       | normal      | 20.00          |
-      | non             | 10       | busy        | 40.00          |
-      | non             | 10       | peak        | 60.00          |
-      | Silver          | 10       | normal      | 10.00          |
-      | Silver          | 10       | busy        | 20.00          |
-      | Silver          | 10       | peak        | 30.00          |
-      | Gold            | 10       | normal      | 0.00           |
-      | Gold            | 10       | busy        | 0.00           |
-      | Gold            | 10       | peak        | 0.00           |
-      | Gold            | 25       | busy        | 2.50           |
-      | Gold            | 25       | peak        | 3.75           |

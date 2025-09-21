@@ -11,6 +11,24 @@ Feature: Toll Charge Calculation
       | Silver     | $1.00/mile     | $0.50/mile      |
       | Gold       | $0.00/mile     | $0.00/mile      |
 
+  @regression @data_driven
+  Scenario Outline: Calculate toll for different membership levels and distances
+    Given the user is a "<membership>" member
+    When the user calculates toll for <distance> miles during normal times
+    Then the total charge should be $<total>
+
+    Examples:
+      | membership | distance | total |
+      | non        | 5        | 10.00 |
+      | non        | 15       | 30.00 |
+      | non        | 30       | 50.00 |
+      | Silver     | 5        | 5.00  |
+      | Silver     | 15       | 15.00 |
+      | Silver     | 30       | 25.00 |
+      | Gold       | 5        | 0.00  |
+      | Gold       | 15       | 0.00  |
+      | Gold       | 30       | 0.00  |
+
   @smoke @basic_calculation
   Scenario: Non-member calculates toll for short distance
     Given the user is a non-member
@@ -67,21 +85,3 @@ Feature: Toll Charge Calculation
     And the charge breakdown should show:
       | Description | Calculation       | Amount |
       | Base charge | 20 miles × $2.00  | $40.00 |
-
-  @regression @data_driven
-  Scenario Outline: Calculate toll for different membership levels and distances
-    Given the user is a "<membership>" member
-    When the user calculates toll for <distance> miles during normal times
-    Then the total charge should be $<total>
-
-    Examples:
-      | membership | distance | total |
-      | non        | 5        | 10.00 |
-      | non        | 15       | 30.00 |
-      | non        | 30       | 50.00 |
-      | Silver     | 5        | 5.00  |
-      | Silver     | 15       | 15.00 |
-      | Silver     | 30       | 25.00 |
-      | Gold       | 5        | 0.00  |
-      | Gold       | 15       | 0.00  |
-      | Gold       | 30       | 0.00  |
