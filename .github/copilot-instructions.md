@@ -166,6 +166,26 @@ When the user calculates toll for 10 miles during normal times
 Then the total charge should be $20.00
 ```
 
+#### Business-Friendly Language
+- **Use natural business language**: Prefer "report the" over "error message should be displayed"
+- **Avoid technical jargon**: Write scenarios from user perspective, not system perspective
+- **Focus on outcomes**: Describe what the business expects, not how the system implements it
+
+#### Example: Business-Friendly Error Handling
+```gherkin
+# ❌ Technical language
+Then an error message should be displayed saying "Distance must be greater than 0"
+
+# ✅ Business-friendly language  
+Then report the "Distance must be greater than 0"
+```
+
+#### Scenario Organization
+- **Start with comprehensive scenarios**: Place broad test matrices first to set the foundation
+- **Follow with boundary testing**: Add edge cases that test specific thresholds
+- **End with specific validations**: Include detailed error cases and special conditions
+- **Think like a book**: Explain simple concepts first, then build complexity
+
 #### Best Practices
 - Write features from user perspective
 - Use domain language, not technical jargon

@@ -4,64 +4,6 @@ Feature: Toll Calculation Edge Cases and Validation
   I want to ensure the calculator handles edge cases correctly
   So that the system is robust and reliable
 
-  Background:
-    # Calculator is automatically initialized in before_scenario hook
-
-  @validation @negative_testing
-  Scenario: Invalid distance input
-    Given the user is a non-member
-    When the user attempts to calculate toll for 0 miles
-    Then an error message should be displayed saying "Distance must be greater than 0"
-    And no charge should be calculated
-
-  @validation @negative_testing
-  Scenario: Negative distance input
-    Given the user is a non-member
-    When the user attempts to calculate toll for -5 miles
-    Then an error message should be displayed saying "Distance must be greater than 0"
-    And no charge should be calculated
-
-  @validation @membership_validation
-  Scenario: Invalid membership type
-    Given the user has an invalid membership type "Platinum"
-    When the user attempts to calculate toll for 10 miles during normal times
-    Then an error message should be displayed saying "Invalid membership type"
-    And no charge should be calculated
-
-  @edge_cases @large_numbers
-  Scenario: Very large distance calculation
-    Given the user is a non-member
-    When the user calculates toll for 1000 miles during normal times
-    Then the total charge should be $1020.00
-    And the charge breakdown should show:
-      | Description         | Calculation        | Amount   |
-      | First 20 miles (base) | 20 miles × $2.00   | $40.00   |
-      | Next 980 miles (base) | 980 miles × $1.00  | $980.00  |
-
-  @edge_cases @precision
-  Scenario: Fractional distance calculation
-    Given the user is a Silver member
-    When the user calculates toll for 10.5 miles during normal times
-    Then the total charge should be $10.50
-    And the charge breakdown should show:
-      | Description | Calculation       | Amount |
-      | Base charge | 10.5 miles × $1.00 | $10.50 |
-
-  @edge_cases @boundary_testing
-  Scenario Outline: Boundary testing for 20-mile threshold
-    Given the user is a "<membership_level>" member
-    When the user calculates toll for <distance> miles during normal times
-    Then the total charge should be $<expected_total>
-
-    Examples:
-      | membership_level | distance | expected_total |
-      | non             | 19.99    | 39.98          |
-      | non             | 20.00    | 40.00          |
-      | non             | 20.01    | 40.01          |
-      | Silver          | 19.99    | 19.99          |
-      | Silver          | 20.00    | 20.00          |
-      | Silver          | 20.01    | 20.01          |
-
   @comprehensive @all_combinations
   Scenario Outline: Comprehensive toll calculation matrix
     Given the user is a "<membership>" member
@@ -97,6 +39,61 @@ Feature: Toll Calculation Edge Cases and Validation
       | Gold       | 25       | normal      | 0.00            |
       | Gold       | 25       | busy        | 2.50            |
       | Gold       | 25       | peak        | 3.75            |
+
+  @edge_cases @boundary_testing
+  Scenario Outline: Boundary testing for 20-mile threshold
+    Given the user is a "<membership_level>" member
+    When the user calculates toll for <distance> miles during normal times
+    Then the total charge should be $<expected_total>
+
+    Examples:
+      | membership_level | distance | expected_total |
+      | non             | 19.99    | 39.98          |
+      | non             | 20.00    | 40.00          |
+      | non             | 20.01    | 40.01          |
+      | Silver          | 19.99    | 19.99          |
+      | Silver          | 20.00    | 20.00          |
+      | Silver          | 20.01    | 20.01          |
+
+  @validation @negative_testing
+  Scenario: Invalid distance input
+    Given the user is a non-member
+    When the user attempts to calculate toll for 0 miles
+    Then report the "Distance must be greater than 0"
+    And no charge should be calculated
+
+  @validation @negative_testing
+  Scenario: Negative distance input
+    Given the user is a non-member
+    When the user attempts to calculate toll for -5 miles
+    Then report the "Distance must be greater than 0"
+    And no charge should be calculated
+
+  @validation @membership_validation
+  Scenario: Invalid membership type
+    Given the user has an invalid membership type "Platinum"
+    When the user attempts to calculate toll for 10 miles during normal times
+    Then report the "Invalid membership type"
+    And no charge should be calculated
+
+  @edge_cases @large_numbers
+  Scenario: Very large distance calculation
+    Given the user is a non-member
+    When the user calculates toll for 1000 miles during normal times
+    Then the total charge should be $1020.00
+    And the charge breakdown should show:
+      | Description         | Calculation        | Amount   |
+      | First 20 miles (base) | 20 miles × $2.00   | $40.00   |
+      | Next 980 miles (base) | 980 miles × $1.00  | $980.00  |
+
+  @edge_cases @precision
+  Scenario: Fractional distance calculation
+    Given the user is a Silver member
+    When the user calculates toll for 10.5 miles during normal times
+    Then the total charge should be $10.50
+    And the charge breakdown should show:
+      | Description | Calculation       | Amount |
+      | Base charge | 10.5 miles × $1.00 | $10.50 |
 
   @performance @stress_testing
   Scenario: Multiple rapid calculations

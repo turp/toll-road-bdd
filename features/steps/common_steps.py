@@ -185,6 +185,13 @@ def step_verify_error_message(context, expected_message):
     assert expected_message in context.last_error, f"Expected '{expected_message}' in error message, but got '{context.last_error}'"
 
 
+@then('report the "{expected_message}"')
+def step_report_message(context, expected_message):
+    """Verify that the expected message is reported (business-friendly language)"""
+    assert context.last_error is not None, "Expected an error but calculation succeeded"
+    assert expected_message in context.last_error, f"Expected '{expected_message}' in error message, but got '{context.last_error}'"
+
+
 @then('no charge should be calculated')
 def step_verify_no_charge(context):
     """Verify that no charge was calculated (due to error)"""
