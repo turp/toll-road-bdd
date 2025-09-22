@@ -16,7 +16,6 @@ def step_calculator_available(context):
     assert context.calculator is not None
     assert hasattr(context.calculator, 'calculate_toll')
 
-
 @given('the standard rates are configured as follows:')
 def step_standard_rates_configured_with_colon(context):
     """Verify standard rates are configured (table validation with colon)"""
@@ -50,12 +49,7 @@ def step_user_non_member(context):
     context.membership = "non"
 
 @given('the user is a "{membership_level}" member')
+@given('the user has an invalid membership type "{membership_level}"')
 def step_user_quoted_membership(context, membership_level):
     """Set the user's membership level from quoted string"""
     context.membership = membership_level
-
-
-@given('the user has an invalid membership type "{invalid_membership}"')
-def step_invalid_membership(context, invalid_membership):
-    """Set an invalid membership type for testing validation"""
-    context.membership = invalid_membership

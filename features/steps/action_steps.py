@@ -25,8 +25,6 @@ def step_attempt_calculate_toll_invalid_distance(context, distance):
         context.last_error = str(e)
         context.last_charge = None
 
-
-# Parametrized calculation steps
 @when('the user calculates toll for {distance:g} miles during {time_period} times')
 def step_calculate_toll(context, distance, time_period):
     """Calculate toll for given distance and time period"""
@@ -58,19 +56,4 @@ def step_multiple_calculations(context, count, distance, time_period):
     context.execution_time = end_time - start_time
     context.multiple_results = results
     context.last_charge = results[0] if results else None
-
-@when('the user performs {count:d} toll calculations for {distance:g} miles during normal times')
-def step_perform_multiple_calculations(context, count, distance):
-    """Perform multiple toll calculations for performance testing"""
-    start_time = time.time()
     
-    context.calculation_results = []
-    for i in range(count):
-        charge = context.calculator.calculate_toll(distance, context.membership, "normal")
-        context.calculation_results.append(charge)
-    
-    end_time = time.time()
-    context.calculation_time = end_time - start_time
-    context.last_charge = context.calculation_results[-1] if context.calculation_results else None
-    # Also set multiple_results for compatibility
-    context.multiple_results = context.calculation_results

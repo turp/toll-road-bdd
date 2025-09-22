@@ -14,7 +14,6 @@ from decimal import Decimal
 import time
 from src.toll_calculator import TollCalculationError
 
-
 @then('the total charge should be ${expected_total:f}')
 def step_verify_total_charge(context, expected_total):
     """Verify the calculated total charge"""
@@ -25,19 +24,16 @@ def step_verify_total_charge(context, expected_total):
     
     assert actual == expected, f"Expected ${expected}, but got ${actual}"
 
-
 @then('report the "{expected_message}"')
 def step_report_message(context, expected_message):
     """Verify that the expected message is reported (business-friendly language)"""
     assert context.last_error is not None, "Expected an error but calculation succeeded"
     assert expected_message in context.last_error, f"Expected '{expected_message}' in error message, but got '{context.last_error}'"
 
-
 @then('no charge should be calculated')
 def step_verify_no_charge(context):
     """Verify that no charge was calculated (due to error)"""
     assert context.last_charge is None, f"Expected no charge but got ${context.last_charge}"
-
 
 @then('the charge breakdown should show:')
 def step_verify_charge_breakdown_with_colon(context):
@@ -73,7 +69,6 @@ def step_verify_multiple_results(context, expected_amount):
     for i, result in enumerate(results):
         assert result == expected, f"Calculation {i+1}: expected ${expected}, got ${result}"
 
-
 @then('all calculations should complete within {max_seconds:d} seconds')
 def step_verify_execution_time(context, max_seconds):
     """Verify that calculations completed within the specified time"""
@@ -87,7 +82,6 @@ def step_verify_execution_time(context, max_seconds):
     
     assert actual_time <= max_seconds, \
         f"Calculations took {actual_time:.2f}s, expected <= {max_seconds}s"
-
 
 @then('the response time should be less than {max_seconds:d} seconds')
 def step_verify_response_time(context, max_seconds):
@@ -106,7 +100,6 @@ def step_verify_response_time(context, max_seconds):
     
     assert execution_time < max_seconds, \
         f"Response time {execution_time:.3f}s exceeded maximum {max_seconds}s"
-
 
 @then('the system should handle the calculation successfully')
 def step_verify_system_handles_calculation(context):
