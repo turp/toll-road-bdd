@@ -53,7 +53,7 @@ Feature: Time-Based Toll Pricing
 
   @smoke @membership_time
   Scenario: Silver member calculates toll during busy times
-    Given the user is a Silver member
+    Given the user is a "Silver" member
     When the user calculates toll for 10 miles during busy times
     Then the total charge should be $20.00
     And the charge breakdown should show:
@@ -63,7 +63,7 @@ Feature: Time-Based Toll Pricing
 
   @priority_high @gold_membership
   Scenario: Gold member calculates toll during busy times
-    Given the user is a Gold member
+    Given the user is a "Gold" member
     When the user calculates toll for 10 miles during busy times
     Then the total charge should be $0.00
     And the charge breakdown should show:
@@ -73,7 +73,7 @@ Feature: Time-Based Toll Pricing
 
   @critical @gold_membership
   Scenario: Gold member calculates toll during peak times with distance over 20 miles
-    Given the user is a Gold member
+    Given the user is a "Gold" member
     When the user calculates toll for 25 miles during peak times
     Then the total charge should be $3.75
     And the charge breakdown should show:

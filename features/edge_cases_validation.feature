@@ -72,7 +72,7 @@ Feature: Toll Calculation Edge Cases and Validation
   @validation @membership_validation
   Scenario: Invalid membership type
     Given the user has an invalid membership type "Platinum"
-    When the user attempts to calculate toll for 10 miles during normal times
+    When the user calculates toll for 10 miles during normal times
     Then report the "Invalid membership type"
     And no charge should be calculated
 
@@ -88,7 +88,7 @@ Feature: Toll Calculation Edge Cases and Validation
 
   @edge_cases @precision
   Scenario: Fractional distance calculation
-    Given the user is a Silver member
+    Given the user is a "Silver" member
     When the user calculates toll for 10.5 miles during normal times
     Then the total charge should be $10.50
     And the charge breakdown should show:

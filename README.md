@@ -170,7 +170,7 @@ for item in breakdown:
 ```gherkin
 Scenario: Silver member calculates toll for long distance during peak times
   Given the toll charge calculator is available
-  And the user is a Silver member
+  And the user is a "Silver" member
   When the user calculates toll for 25 miles during peak times
   Then the total charge should be $67.50
   And the charge breakdown should show:

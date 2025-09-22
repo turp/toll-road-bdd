@@ -50,7 +50,7 @@ Feature: Toll Charge Calculation
 
   @smoke @membership
   Scenario: Silver member calculates toll for short distance
-    Given the user is a Silver member
+    Given the user is a "Silver" member
     When the user calculates toll for 10 miles during normal times
     Then the total charge should be $10.00
     And the charge breakdown should show:
@@ -59,7 +59,7 @@ Feature: Toll Charge Calculation
 
   @smoke @membership
   Scenario: Silver member calculates toll for long distance
-    Given the user is a Silver member
+    Given the user is a "Silver" member
     When the user calculates toll for 25 miles during normal times
     Then the total charge should be $22.50
     And the charge breakdown should show:
@@ -69,7 +69,7 @@ Feature: Toll Charge Calculation
 
   @smoke @membership
   Scenario: Gold member calculates toll during normal times
-    Given the user is a Gold member
+    Given the user is a "Gold" member
     When the user calculates toll for 25 miles during normal times
     Then the total charge should be $0.00
     And the charge breakdown should show:
