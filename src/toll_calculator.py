@@ -155,7 +155,7 @@ class TollCalculator:
             
             self.last_calculation_breakdown.append({
                 "Description": f"Base charge",
-                "Calculation": f"{distance_str} miles × ${rate}",
+                "Calculation": f"{distance_str} miles x ${rate}",
                 "Amount": f"${charge:.2f}"
             })
             
@@ -178,12 +178,12 @@ class TollCalculator:
             self.last_calculation_breakdown.extend([
                 {
                     "Description": "First 20 miles (base)",
-                    "Calculation": f"20 miles × ${first_20_rate}",
+                    "Calculation": f"20 miles x ${first_20_rate}",
                     "Amount": f"${first_20_charge:.2f}"
                 },
                 {
                     "Description": f"Next {remaining_str} miles (base)",
-                    "Calculation": f"{remaining_str} miles × ${beyond_20_rate}",
+                    "Calculation": f"{remaining_str} miles x ${beyond_20_rate}",
                     "Amount": f"${remaining_charge:.2f}"
                 }
             ])
@@ -205,7 +205,7 @@ class TollCalculator:
                 multiplier_str = str(int(multiplier)) if multiplier == int(multiplier) else str(multiplier)
                 self.last_calculation_breakdown.append({
                     "Description": f"{time_period.value.title()} time multiplier",
-                    "Calculation": f"${base_charge:.2f} × {multiplier_str}",
+                    "Calculation": f"${base_charge:.2f} x {multiplier_str}",
                     "Amount": f"${final_charge:.2f}"
                 })
                 
@@ -225,17 +225,17 @@ class TollCalculator:
                 self.last_calculation_breakdown = [
                     {
                         "Description": "First 20 miles (free)",
-                        "Calculation": f"20 miles × $0.00",
+                        "Calculation": f"20 miles x $0.00",
                         "Amount": "$0.00"
                     },
                     {
                         "Description": f"Next {remaining_str} miles (base)",
-                        "Calculation": f"{remaining_str} miles × $0.25",
+                        "Calculation": f"{remaining_str} miles x $0.25",
                         "Amount": f"${remaining_miles * beyond_20_rate:.2f}"
                     },
                     {
                         "Description": f"{time_period.value.title()} time multiplier",
-                        "Calculation": f"${remaining_miles * beyond_20_rate:.2f} × {multiplier_str}",
+                        "Calculation": f"${remaining_miles * beyond_20_rate:.2f} x {multiplier_str}",
                         "Amount": f"${charge:.2f}"
                     }
                 ]
@@ -267,7 +267,7 @@ class TollCalculator:
             
             self.last_calculation_breakdown.append({
                 "Description": f"{time_period.value.title()} time multiplier",
-                "Calculation": f"${base_charge:.2f} × {multiplier_str}",
+                "Calculation": f"${base_charge:.2f} x {multiplier_str}",
                 "Amount": f"${final_charge:.2f}"
             })
         

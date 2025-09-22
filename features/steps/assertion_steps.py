@@ -14,7 +14,7 @@ from decimal import Decimal
 import time
 from src.toll_calculator import TollCalculationError
 
-@then('the total charge should be ${expected_total:f}')
+@then('the total charge should be {expected_total:f}')
 def step_verify_total_charge(context, expected_total):
     """Verify the calculated total charge"""
     assert context.last_charge is not None, f"Expected charge but got error: {context.last_error}"

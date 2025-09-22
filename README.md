@@ -172,13 +172,13 @@ Scenario: Silver member calculates toll for long distance during peak times
   Given the toll charge calculator is available
   And the user is a "Silver" member
   When the user calculates toll for 25 miles during peak times
-  Then the total charge should be $67.50
+  Then the total charge should be 67.50
   And the charge breakdown should show:
     | Description           | Calculation      | Amount |
-    | First 20 miles (base) | 20 miles × $1.00 | $20.00 |
-    | Next 5 miles (base)   | 5 miles × $0.50  | $2.50  |
+    | First 20 miles (base) | 20 miles x $1.00 | $20.00 |
+    | Next 5 miles (base)   | 5 miles x $0.50  | $2.50  |
     | Total base charge     | $20.00 + $2.50   | $22.50 |
-    | Peak time multiplier  | $22.50 × 3       | $67.50 |
+    | Peak time multiplier  | $22.50 x 3       | $67.50 |
 ```
 
 ## Contributing

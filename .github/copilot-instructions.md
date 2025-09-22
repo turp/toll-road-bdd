@@ -82,10 +82,10 @@ Scenario: Calculate toll for non-member short distance
   Given the toll charge calculator is available
   And the user is a non-member
   When the user calculates toll for 10 miles during normal times
-  Then the total charge should be $20.00
+  Then the total charge should be 20.00
   And the charge breakdown should show:
     | Description | Calculation      | Amount |
-    | Base charge | 10 miles × $2.00 | $20.00 |
+    | Base charge | 10 miles x $2.00 | $20.00 |
 ```
 
 #### Scenario Outline Usage
@@ -94,7 +94,7 @@ Scenario Outline: Validate toll calculation for different membership levels
   Given the toll charge calculator is available
   And the user is a "<membership>" member
   When the user calculates toll for <distance> miles during <time_period> times
-  Then the total charge should be $<expected_charge>
+  Then the total charge should be <expected_charge>
 
   Examples:
     | membership | distance | time_period | expected_charge |
@@ -124,7 +124,7 @@ def step_calculate_toll(context, distance, time_period):
     )
     context.calculation_breakdown = context.calculator.get_charge_breakdown()
 
-@then('the total charge should be ${expected_amount:f}')
+@then('the total charge should be {expected_amount:f}')
 def step_verify_total_charge(context, expected_amount):
     """Verify the calculated toll amount."""
     expected = Decimal(str(expected_amount))
@@ -163,7 +163,7 @@ def before_scenario(context, scenario):
 # Instead focus on business context
 Given the user is a non-member  # ✅ Business-focused
 When the user calculates toll for 10 miles during normal times
-Then the total charge should be $20.00
+Then the total charge should be 20.00
 ```
 
 #### Business-Friendly Language

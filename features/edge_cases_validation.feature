@@ -8,7 +8,7 @@ Feature: Toll Calculation Edge Cases and Validation
   Scenario Outline: Comprehensive toll calculation matrix
     Given the user is a "<membership>" member
     When the user calculates toll for <distance> miles during <time_period> times
-    Then the total charge should be $<expected_charge>
+    Then the total charge should be <expected_charge>
 
     Examples:
       | membership | distance | time_period | expected_charge |
@@ -44,7 +44,7 @@ Feature: Toll Calculation Edge Cases and Validation
   Scenario Outline: Boundary testing for 20-mile threshold
     Given the user is a "<membership_level>" member
     When the user calculates toll for <distance> miles during normal times
-    Then the total charge should be $<expected_total>
+    Then the total charge should be <expected_total>
 
     Examples:
       | membership_level | distance | expected_total |
@@ -80,20 +80,20 @@ Feature: Toll Calculation Edge Cases and Validation
   Scenario: Very large distance calculation
     Given the user is a non-member
     When the user calculates toll for 1000 miles during normal times
-    Then the total charge should be $1020.00
+    Then the total charge should be 1020.00
     And the charge breakdown should show:
       | Description         | Calculation        | Amount   |
-      | First 20 miles (base) | 20 miles × $2.00   | $40.00   |
-      | Next 980 miles (base) | 980 miles × $1.00  | $980.00  |
+      | First 20 miles (base) | 20 miles x $2.00   | $40.00   |
+      | Next 980 miles (base) | 980 miles x $1.00  | $980.00  |
 
   @edge_cases @precision
   Scenario: Fractional distance calculation
     Given the user is a "Silver" member
     When the user calculates toll for 10.5 miles during normal times
-    Then the total charge should be $10.50
+    Then the total charge should be 10.50
     And the charge breakdown should show:
       | Description | Calculation       | Amount |
-      | Base charge | 10.5 miles × $1.00 | $10.50 |
+      | Base charge | 10.5 miles x $1.00 | $10.50 |
 
   @performance @stress_testing
   Scenario: Multiple rapid calculations
@@ -107,5 +107,5 @@ Feature: Toll Calculation Edge Cases and Validation
     Given the user is a non-member
     When the user calculates toll for 9999 miles during peak times
     Then the system should handle the calculation successfully
-    And the total charge should be $30057.00
+    And the total charge should be 30057.00
     And the response time should be less than 2 seconds

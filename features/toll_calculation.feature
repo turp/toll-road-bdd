@@ -15,7 +15,7 @@ Feature: Toll Charge Calculation
   Scenario Outline: Calculate toll for different membership levels and distances
     Given the user is a "<membership>" member
     When the user calculates toll for <distance> miles during normal times
-    Then the total charge should be $<total>
+    Then the total charge should be <total>
 
     Examples:
       | membership | distance | total |
@@ -33,55 +33,55 @@ Feature: Toll Charge Calculation
   Scenario: Non-member calculates toll for short distance
     Given the user is a non-member
     When the user calculates toll for 10 miles during normal times
-    Then the total charge should be $20.00
+    Then the total charge should be 20.00
     And the charge breakdown should show:
       | Description | Calculation      | Amount |
-      | Base charge | 10 miles × $2.00 | $20.00 |
+      | Base charge | 10 miles x $2.00 | $20.00 |
 
   @smoke @basic_calculation
   Scenario: Non-member calculates toll for long distance
     Given the user is a non-member
     When the user calculates toll for 25 miles during normal times
-    Then the total charge should be $45.00
+    Then the total charge should be 45.00
     And the charge breakdown should show:
       | Description        | Calculation       | Amount |
-      | First 20 miles (base) | 20 miles × $2.00 | $40.00 |
-      | Next 5 miles (base)   | 5 miles × $1.00  | $5.00  |
+      | First 20 miles (base) | 20 miles x $2.00 | $40.00 |
+      | Next 5 miles (base)   | 5 miles x $1.00  | $5.00  |
 
   @smoke @membership
   Scenario: Silver member calculates toll for short distance
     Given the user is a "Silver" member
     When the user calculates toll for 10 miles during normal times
-    Then the total charge should be $10.00
+    Then the total charge should be 10.00
     And the charge breakdown should show:
       | Description | Calculation      | Amount |
-      | Base charge | 10 miles × $1.00 | $10.00 |
+      | Base charge | 10 miles x $1.00 | $10.00 |
 
   @smoke @membership
   Scenario: Silver member calculates toll for long distance
     Given the user is a "Silver" member
     When the user calculates toll for 25 miles during normal times
-    Then the total charge should be $22.50
+    Then the total charge should be 22.50
     And the charge breakdown should show:
       | Description        | Calculation       | Amount |
-      | First 20 miles (base) | 20 miles × $1.00 | $20.00 |
-      | Next 5 miles (base)   | 5 miles × $0.50  | $2.50  |
+      | First 20 miles (base) | 20 miles x $1.00 | $20.00 |
+      | Next 5 miles (base)   | 5 miles x $0.50  | $2.50  |
 
   @smoke @membership
   Scenario: Gold member calculates toll during normal times
     Given the user is a "Gold" member
     When the user calculates toll for 25 miles during normal times
-    Then the total charge should be $0.00
+    Then the total charge should be 0.00
     And the charge breakdown should show:
       | Description        | Calculation       | Amount |
-      | First 20 miles (base) | 20 miles × $0.00 | $0.00  |
-      | Next 5 miles (base)   | 5 miles × $0.00  | $0.00  |
+      | First 20 miles (base) | 20 miles x $0.00 | $0.00  |
+      | Next 5 miles (base)   | 5 miles x $0.00  | $0.00  |
 
   @regression @edge_cases
   Scenario: Calculate toll for exactly 20 miles
     Given the user is a non-member
     When the user calculates toll for 20 miles during normal times
-    Then the total charge should be $40.00
+    Then the total charge should be 40.00
     And the charge breakdown should show:
       | Description | Calculation       | Amount |
-      | Base charge | 20 miles × $2.00  | $40.00 |
+      | Base charge | 20 miles x $2.00  | $40.00 |
