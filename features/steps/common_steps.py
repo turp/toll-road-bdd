@@ -178,13 +178,6 @@ def step_verify_total_charge(context, expected_total):
     assert actual == expected, f"Expected ${expected}, but got ${actual}"
 
 
-@then('an error message should be displayed saying "{expected_message}"')
-def step_verify_error_message(context, expected_message):
-    """Verify that the expected error message was displayed"""
-    assert context.last_error is not None, "Expected an error but calculation succeeded"
-    assert expected_message in context.last_error, f"Expected '{expected_message}' in error message, but got '{context.last_error}'"
-
-
 @then('report the "{expected_message}"')
 def step_report_message(context, expected_message):
     """Verify that the expected message is reported (business-friendly language)"""
